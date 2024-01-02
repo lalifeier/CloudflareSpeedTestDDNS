@@ -2,7 +2,8 @@
 #         用于CloudflareSpeedTestDDNS运行环境检测和必要软件初始化安装。
 
 #github下在CloudflareSpeedTest使用ghproxy代理
-PROXY=https://ghproxy.com/
+# PROXY=https://ghproxy.com/
+PROXY=
 
 flag_file=".ran_before"
 CloudflareST="./cf_ddns/CloudflareST"
@@ -63,7 +64,7 @@ if [ ! -e "$flag_file" ]; then
 	else
 	    echo "jq is already installed."
 	fi
-	
+
 	# 检查wget是否安装
 	if ! command -v wget &> /dev/null; then
 	    echo "wget not found. Adding to the list of required packages."
@@ -71,7 +72,7 @@ if [ ! -e "$flag_file" ]; then
 	else
 	    echo "wget is already installed."
 	fi
-	
+
 	# 检查curl是否安装
 	if ! command -v curl &> /dev/null; then
 	    echo "curl not found. Adding to the list of required packages."
@@ -79,7 +80,7 @@ if [ ! -e "$flag_file" ]; then
 	else
 	    echo "curl is already installed."
 	fi
-	
+
 	# 检查tar是否安装
 	if ! command -v tar &> /dev/null; then
 	    echo "tar not found. Adding to the list of required packages."
@@ -89,7 +90,7 @@ if [ ! -e "$flag_file" ]; then
 	    packages="$packages tar"
 	    echo "tar is already installed."
 	fi
-	
+
 	# 检查sed是否安装
 	if ! command -v sed &> /dev/null; then
 	    echo "sed not found. Adding to the list of required packages."
@@ -97,7 +98,7 @@ if [ ! -e "$flag_file" ]; then
 	else
 	    echo "sed is already installed."
 	fi
-	
+
 	# 检查awk是否安装
 	if ! command -v awk &> /dev/null; then
 	    echo "awk not found. Adding to the list of required packages."
@@ -105,7 +106,7 @@ if [ ! -e "$flag_file" ]; then
 	else
 	    echo "awk is already installed."
 	fi
-	
+
 	# 检查tr是否安装
 	if ! command -v tr &> /dev/null; then
 	    echo "tr not found. Adding to the list of required packages."
