@@ -2,6 +2,8 @@ name: Auto-DDNS
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
   schedule:
     - cron: "0 */1 * * *"
 
@@ -15,5 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Auto
-        run: bash start.sh
+      - name: Auto DDNS
+        run: |
+          bash start.sh
