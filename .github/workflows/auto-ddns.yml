@@ -1,0 +1,19 @@
+name: Auto-DDNS
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */1 * * *"
+
+env:
+  api_key: ${{ secrets.api_key }}
+
+jobs:
+  auto-ddns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Auto
+        run: bash start.sh
