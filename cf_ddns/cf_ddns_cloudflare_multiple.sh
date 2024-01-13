@@ -98,7 +98,8 @@ elif [ "$IP_PR_IP" = "2" ]; then
   fi
 elif [ "$IP_PR_IP" = "3" ]; then
   if [[ $(cat ./cf_ddns/.pr_ip_timestamp | jq -r ".pr3_expires") -le $(date -d "$(date "+%Y-%m-%d %H:%M:%S")" +%s) ]]; then
-    curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" >>./cf_ddns/pr_ip.txt
+    # curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" >>./cf_ddns/pr_ip.txt
+    curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/best-ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" >>./cf_ddns/pr_ip.txt
     echo "{\"pr3_expires\":\"$(($(date -d "$(date "+%Y-%m-%d %H:%M:%S")" +%s) + 86400))\"}" >./cf_ddns/.pr_ip_timestamp
     echo "已更新线路3的反向代理列表"
   fi
@@ -176,6 +177,8 @@ updateDNSRecords() {
 
       x=$((x + 1)) # Increment counter
     done
+
+    # ips=($(curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/best-ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"))
 
     for ip in "${ips[@]}"; do
       url="https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records"
