@@ -8,9 +8,9 @@ on:
     - cron: "* */1 * * *"
 
 env:
-  api_key: ${{ secrets.api_key }}
-  x_email: ${{ secrets.x_email }}
-  hostname: ${{ secrets.hostname }}
+  api_key: ${{ secrets.API_KEY }}
+  x_email: ${{ secrets.X_EMAIL }}
+  hostname: ${{ secrets.HOSTNAME }}
 
 jobs:
   auto-ddns:
