@@ -2,8 +2,6 @@
 #		版本：20231004
 #         用于CloudflareST调用，更新hosts和更新cloudflare DNS。
 
-IFS=' ' read -ra hostname <<<"$hostname"
-
 ipv4Regex="((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])"
 
 #获取空间id
@@ -98,13 +96,6 @@ elif [ "$IP_PR_IP" = "2" ]; then
     echo "{\"pr2_expires\":\"$(($(date -d "$(date "+%Y-%m-%d %H:%M:%S")" +%s) + 86400))\"}" >./cf_ddns/.pr_ip_timestamp
     echo "已更新线路2的反向代理列表"
   fi
-elif [ "$IP_PR_IP" = "3" ]; then
-  if [[ $(cat ./cf_ddns/.pr_ip_timestamp | jq -r ".pr3_expires") -le $(date -d "$(date "+%Y-%m-%d %H:%M:%S")" +%s) ]]; then
-    # curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" >>./cf_ddns/pr_ip.txt
-    curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/best-ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" >>./cf_ddns/pr_ip.txt
-    echo "{\"pr3_expires\":\"$(($(date -d "$(date "+%Y-%m-%d %H:%M:%S")" +%s) + 86400))\"}" >./cf_ddns/.pr_ip_timestamp
-    echo "已更新线路3的反向代理列表"
-  fi
 fi
 
 if [ "$IP_PR_IP" -ne "0" ]; then
@@ -162,25 +153,23 @@ updateDNSRecords() {
     declare -a ips
 
     # Assuming num is the total number of IPs in result.csv
-    # num=$(awk -F, 'END {print NR-1}' ./cf_ddns/result.csv) # Subtract 1 if there's a header line in result.csv
+    num=$(awk -F, 'END {print NR-1}' ./cf_ddns/result.csv) # Subtract 1 if there's a header line in result.csv
 
-    # x=0 # Initialize counter
-    # while [[ ${x} -lt ${num} ]]; do
-    #   ipAddr=$(sed -n "$((x + 2)),1p" ./cf_ddns/result.csv | awk -F, '{print $1}')
-    #   ipSpeed=$(sed -n "$((x + 2)),1p" ./cf_ddns/result.csv | awk -F, '{print $6}')
+    x=0 # Initialize counter
+    while [[ ${x} -lt ${num} ]]; do
+      ipAddr=$(sed -n "$((x + 2)),1p" ./cf_ddns/result.csv | awk -F, '{print $1}')
+      ipSpeed=$(sed -n "$((x + 2)),1p" ./cf_ddns/result.csv | awk -F, '{print $6}')
 
-    #   if [[ $ipSpeed == "0.00" ]]; then
-    #     echo "第$((x + 1))个---$ipAddr测速为0，跳过更新DNS，检查配置是否能正常测速！"
-    #   else
-    #     #        echo "准备更新第$((x + 1))个---$ipAddr"
-    #     # Append the IP address to the ips array
-    #     ips+=("$ipAddr")
-    #   fi
+      if [[ $ipSpeed == "0.00" ]]; then
+        echo "第$((x + 1))个---$ipAddr测速为0，跳过更新DNS，检查配置是否能正常测速！"
+      else
+        #        echo "准备更新第$((x + 1))个---$ipAddr"
+        # Append the IP address to the ips array
+        ips+=("$ipAddr")
+      fi
 
-    #   x=$((x + 1)) # Increment counter
-    # done
-
-    ips=($(curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/best-ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"))
+      x=$((x + 1)) # Increment counter
+    done
 
     for ip in "${ips[@]}"; do
       url="https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records"
