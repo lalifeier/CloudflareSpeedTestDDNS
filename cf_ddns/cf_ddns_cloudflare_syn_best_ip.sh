@@ -85,7 +85,8 @@ updateDNSRecords() {
 echo "正在更新域名，请稍等"
 
 declare -a ips
-ips=($(curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/best-ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"))
+# ips=($(curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/best-ip.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"))
+ips=($(curl -sSf https://raw.githubusercontent.com/ymyuuu/Proxy-IP-library/main/bestproxy.txt | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"))
 
 echo "IPs: ${ips[@]}"
 
